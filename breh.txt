@@ -1,0 +1,593 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+-- Initialize managers
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+
+local Window = Fluent:CreateWindow({
+    Title = "Slap Battles Script " .. Fluent.Version,
+    SubTitle = identifyexecutor(),
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "hand" }),
+    Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+    Anti = Window:AddTab({ Title = "Anti", Icon = "shield" }), -- New Anti tab
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+-- Game variables
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+gloveHits = {
+    ["Default"] = game.ReplicatedStorage.b,
+    ["Extended"] = game.ReplicatedStorage.b,
+    -----------// Glove Hit General Or New Glove \\-----------
+    ["T H I C K"] = game.ReplicatedStorage.GeneralHit,
+    ["Squid"] = game.ReplicatedStorage.GeneralHit,
+    ["Gummy"] = game.ReplicatedStorage.GeneralHit,
+    ["RNG"] = game.ReplicatedStorage.GeneralHit,
+    ["Tycoon"] = game.ReplicatedStorage.GeneralHit,
+    ["Charge"] = game.ReplicatedStorage.GeneralHit,
+    ["Baller"] = game.ReplicatedStorage.GeneralHit,
+    ["Tableflip"] = game.ReplicatedStorage.GeneralHit,
+    ["Booster"] = game.ReplicatedStorage.GeneralHit,
+    ["Shield"] = game.ReplicatedStorage.GeneralHit,
+    ["Track"] = game.ReplicatedStorage.GeneralHit,
+    ["Goofy"] = game.ReplicatedStorage.GeneralHit,
+    ["Confusion"] = game.ReplicatedStorage.GeneralHit,
+    ["Elude"] = game.ReplicatedStorage.GeneralHit,
+    ["Glitch"] = game.ReplicatedStorage.GeneralHit,
+    ["Snowball"] = game.ReplicatedStorage.GeneralHit,
+    ["fish"] = game.ReplicatedStorage.GeneralHit,
+    ["Killerfish"] = game.ReplicatedStorage.GeneralHit,
+    ["🗿"] = game.ReplicatedStorage.GeneralHit,
+    ["Obby"] = game.ReplicatedStorage.GeneralHit,
+    ["Voodoo"] = game.ReplicatedStorage.GeneralHit,
+    ["Leash"] = game.ReplicatedStorage.GeneralHit,
+    ["Flamarang"] = game.ReplicatedStorage.GeneralHit,
+    ["Berserk"] = game.ReplicatedStorage.GeneralHit,
+    ["Quake"] = game.ReplicatedStorage.GeneralHit,
+    ["Rattlebones"] = game.ReplicatedStorage.GeneralHit,
+    ["Chain"] = game.ReplicatedStorage.GeneralHit,
+    ["Ping Pong"] = game.ReplicatedStorage.GeneralHit,
+    ["Whirlwind"] = game.ReplicatedStorage.GeneralHit,
+    ["Slicer"] = game.ReplicatedStorage.GeneralHit,
+    ["Counter"] = game.ReplicatedStorage.GeneralHit,
+    ["Hammer"] = game.ReplicatedStorage.GeneralHit,
+    ["Excavator"] = game.ReplicatedStorage.GeneralHit,
+    ["Home Run"] = game.ReplicatedStorage.GeneralHit,
+    ["Psycho"] = game.ReplicatedStorage.GeneralHit,
+    ["Kraken"] = game.ReplicatedStorage.GeneralHit,
+    ["Gravity"] = game.ReplicatedStorage.GeneralHit,
+    ["Lure"] = game.ReplicatedStorage.GeneralHit,
+    ["Jebaited"] = game.ReplicatedStorage.GeneralHit,
+    ["Meteor"] = game.ReplicatedStorage.GeneralHit,
+    ["Tinkerer"] = game.ReplicatedStorage.GeneralHit,    
+    ["Guardian Angel"] = game.ReplicatedStorage.GeneralHit,
+    ["Sun"] = game.ReplicatedStorage.GeneralHit,
+    ["Necromancer"] = game.ReplicatedStorage.GeneralHit,
+    ["Zombie"] = game.ReplicatedStorage.GeneralHit,
+    ["Dual"] = game.ReplicatedStorage.GeneralHit,
+    ["Alchemist"] = game.ReplicatedStorage.GeneralHit,
+    ["Parry"] = game.ReplicatedStorage.GeneralHit,
+    ["Druid"] = game.ReplicatedStorage.GeneralHit,
+    ["Oven"] = game.ReplicatedStorage.GeneralHit,
+    ["Jester"] = game.ReplicatedStorage.GeneralHit,
+    ["Ferryman"] = game.ReplicatedStorage.GeneralHit,
+    ["Scythe"] = game.ReplicatedStorage.GeneralHit,
+    ["Blackhole"] = game.ReplicatedStorage.GeneralHit,
+    ["Santa"] = game.ReplicatedStorage.GeneralHit,
+    ["Grapple"] = game.ReplicatedStorage.GeneralHit,
+    ["Iceskate"] = game.ReplicatedStorage.GeneralHit,
+    ["Pan"] = game.ReplicatedStorage.GeneralHit,
+    ["Blasphemy"] = game.ReplicatedStorage.GeneralHit,
+    ["Blink"] = game.ReplicatedStorage.GeneralHit,
+    ["Ultra Instinct"] = game.ReplicatedStorage.GeneralHit,
+    ["Admin"] = game.ReplicatedStorage.GeneralHit,
+    ["Prop"] = game.ReplicatedStorage.GeneralHit,
+    ["Joust"] = game.ReplicatedStorage.GeneralHit,
+    ["Slapstick"] = game.ReplicatedStorage.GeneralHit,
+    ["Firework"] = game.ReplicatedStorage.GeneralHit,
+    ["Run"] = game.ReplicatedStorage.GeneralHit,
+    ["Beatdown"] = game.ReplicatedStorage.GeneralHit,
+    ["L.O.L.B.O.M.B"] = game.ReplicatedStorage.GeneralHit,
+    ["Glovel"] = game.ReplicatedStorage.GeneralHit,
+    ["Chicken"] = game.ReplicatedStorage.GeneralHit,
+    ["Divebomb"] = game.ReplicatedStorage.GeneralHit,
+    ["Lamp"] = game.ReplicatedStorage.GeneralHit,
+    ["Pocket"] = game.ReplicatedStorage.GeneralHit,
+    ["BONK"] = game.ReplicatedStorage.GeneralHit,
+    ["Knockoff"] = game.ReplicatedStorage.GeneralHit,
+    ["Divert"] = game.ReplicatedStorage.GeneralHit,
+    ["Frostbite"] = game.ReplicatedStorage.GeneralHit,
+    ["Sbeve"] = game.ReplicatedStorage.GeneralHit,
+    ["Plank"] = game.ReplicatedStorage.GeneralHit,
+    ["Golem"] = game.ReplicatedStorage.GeneralHit,
+    ["Spoonful"] = game.ReplicatedStorage.GeneralHit,
+    ["Grab"] = game.ReplicatedStorage.GeneralHit,
+    ["the schlop"] = game.ReplicatedStorage.GeneralHit,
+    ["UFO"] = game.ReplicatedStorage.GeneralHit,
+    ["el gato"] = game.ReplicatedStorage.GeneralHit,
+    ["Siphon"] = game.ReplicatedStorage.GeneralHit,
+    ["Hive"] = game.ReplicatedStorage.GeneralHit,
+    ["Wrench"] = game.ReplicatedStorage.GeneralHit,
+    ["Hunter"] = game.ReplicatedStorage.GeneralHit,
+    ["Relude"] = game.ReplicatedStorage.GeneralHit,
+    ["Avatar"] = game.ReplicatedStorage.GeneralHit,
+    ["Demolition"] = game.ReplicatedStorage.GeneralHit,
+    ["Shotgun"] = game.ReplicatedStorage.GeneralHit,
+    ["Beachball"] = game.ReplicatedStorage.GeneralHit,
+    -----------// Glove Hit Normal Or New Glove \\-----------
+    ["ZZZZZZZ"] = game.ReplicatedStorage.ZZZZZZZHit,
+    ["Brick"] = game.ReplicatedStorage.BrickHit,
+    ["Snow"] = game.ReplicatedStorage.SnowHit,
+    ["Pull"] = game.ReplicatedStorage.PullHit,
+    ["Flash"] = game.ReplicatedStorage.FlashHit,
+    ["Spring"] = game.ReplicatedStorage.springhit,
+    ["Swapper"] = game.ReplicatedStorage.HitSwapper,
+    ["Bull"] = game.ReplicatedStorage.BullHit,
+    ["Dice"] = game.ReplicatedStorage.DiceHit,
+    ["Ghost"] = game.ReplicatedStorage.GhostHit,
+    ["Thanos"] = game.ReplicatedStorage.GeneralHit,
+    ["Stun"] = game.ReplicatedStorage.HtStun,
+    ["Za Hando"] = game.ReplicatedStorage.zhramt,
+    ["Fort"] = game.ReplicatedStorage.Fort,
+    ["Magnet"] = game.ReplicatedStorage.MagnetHIT,
+    ["Pusher"] = game.ReplicatedStorage.PusherHit,
+    ["Anchor"] = game.ReplicatedStorage.hitAnchor,
+    ["Space"] = game.ReplicatedStorage.HtSpace,
+    ["Boomerang"] = game.ReplicatedStorage.BoomerangH,
+    ["Speedrun"] = game.ReplicatedStorage.Speedrunhit,
+    ["Mail"] = game.ReplicatedStorage.MailHit,
+    ["Golden"] = game.ReplicatedStorage.GoldenHit,
+    ["MR"] = game.ReplicatedStorage.MisterHit,
+    ["Reaper"] = game.ReplicatedStorage.ReaperHit,
+    ["Replica"] = game.ReplicatedStorage.ReplicaHit,
+    ["Defense"] = game.ReplicatedStorage.DefenseHit,
+    ["Killstreak"] = game.ReplicatedStorage.KSHit,
+    ["Reverse"] = game.ReplicatedStorage.ReverseHit,
+    ["Shukuchi"] = game.ReplicatedStorage.ShukuchiHit,
+    ["Duelist"] = game.ReplicatedStorage.DuelistHit,
+    ["woah"] = game.ReplicatedStorage.woahHit,
+    ["Ice"] = game.ReplicatedStorage.IceHit,
+    ["Adios"] = game.ReplicatedStorage.hitAdios,
+    ["Blocked"] = game.ReplicatedStorage.BlockedHit,
+    ["Engineer"] = game.ReplicatedStorage.engiehit,
+    ["Rocky"] = game.ReplicatedStorage.RockyHit,
+    ["Conveyor"] = game.ReplicatedStorage.ConvHit,
+    ["STOP"] = game.ReplicatedStorage.STOP,
+    ["Phantom"] = game.ReplicatedStorage.PhantomHit,
+    ["Wormhole"] = game.ReplicatedStorage.WormHit,
+    ["Acrobat"] = game.ReplicatedStorage.AcHit,
+    ["Plague"] = game.ReplicatedStorage.PlagueHit,
+    ["[REDACTED]"] = game.ReplicatedStorage.ReHit,
+    ["bus"] = game.ReplicatedStorage.hitbus,
+    ["Phase"] = game.ReplicatedStorage.PhaseH,
+    ["Warp"] = game.ReplicatedStorage.WarpHt,
+    ["Bomb"] = game.ReplicatedStorage.BombHit,
+    ["Bubble"] = game.ReplicatedStorage.BubbleHit,
+    ["Jet"] = game.ReplicatedStorage.JetHit,
+    ["Shard"] = game.ReplicatedStorage.ShardHIT,
+    ["potato"] = game.ReplicatedStorage.potatohit,
+    ["CULT"] = game.ReplicatedStorage.CULTHit,
+    ["bob"] = game.ReplicatedStorage.bobhit,
+    ["Buddies"] = game.ReplicatedStorage.buddiesHIT,
+    ["Spy"] = game.ReplicatedStorage.SpyHit,
+    ["Detonator"] = game.ReplicatedStorage.DetonatorHit,
+    ["Rage"] = game.ReplicatedStorage.GRRRR,
+    ["Trap"] = game.ReplicatedStorage.traphi,
+    ["Orbit"] = game.ReplicatedStorage.Orbihit,
+    ["Hybrid"] = game.ReplicatedStorage.HybridCLAP,
+    ["Slapple"] = game.ReplicatedStorage.SlappleHit,
+    ["Disarm"] = game.ReplicatedStorage.DisarmH,
+    ["Dominance"] = game.ReplicatedStorage.DominanceHit,
+    ["Link"] = game.ReplicatedStorage.LinkHit,
+    ["Rojo"] = game.ReplicatedStorage.RojoHit,
+    ["rob"] = game.ReplicatedStorage.robhit,
+    ["Rhythm"] = game.ReplicatedStorage.rhythmhit,
+    ["Nightmare"] = game.ReplicatedStorage.nightmarehit,
+    ["Hitman"] = game.ReplicatedStorage.HitmanHit,
+    ["Thor"] = game.ReplicatedStorage.ThorHit,
+    ["Retro"] = game.ReplicatedStorage.RetroHit,
+    ["Cloud"] = game.ReplicatedStorage.CloudHit,
+    ["Null"] = game.ReplicatedStorage.NullHit,
+    ["spin"] = game.ReplicatedStorage.spinhit,
+    -----------// Glove Hit Stun \\-----------
+    ["Kinetic"] = game.ReplicatedStorage.HtStun,
+    ["Recall"] = game.ReplicatedStorage.HtStun,
+    ["Balloony"] = game.ReplicatedStorage.HtStun,
+    ["Sparky"] = game.ReplicatedStorage.HtStun,
+    ["Boogie"] = game.ReplicatedStorage.HtStun,
+    ["Stun"] = game.ReplicatedStorage.HtStun,
+    ["Coil"] = game.ReplicatedStorage.HtStun,
+    -----------// Glove Hit Diamond \\-----------
+    ["Diamond"] = game.ReplicatedStorage.DiamondHit,
+    ["Megarock"] = game.ReplicatedStorage.DiamondHit,
+    -----------// Glove Hit Celestial \\-----------
+    ["Moon"] = game.ReplicatedStorage.CelestialHit,
+    ["Jupiter"] = game.ReplicatedStorage.CelestialHit,
+    -----------// Glove Hard \\-----------
+    ["Mitten"] = game.ReplicatedStorage.MittenHit,
+    ["Hallow Jack"] = game.ReplicatedStorage.HallowHIT,
+    -----------// Glove Hit Power \\-----------
+    ["OVERKILL"] = game.ReplicatedStorage.Overkillhit,
+    ["The Flex"] = game.ReplicatedStorage.FlexHit,
+    ["Custom"] = game.ReplicatedStorage.CustomHit,
+    ["God's Hand"] = game.ReplicatedStorage.Godshand,
+    ["Error"] = game.ReplicatedStorage.Errorhit
+}
+
+-- Visualizer part
+local visualizer = Instance.new("Part")
+visualizer.Shape = Enum.PartType.Cylinder
+visualizer.Material = Enum.Material.Neon
+visualizer.Color = Color3.fromRGB(0, 170, 255)
+visualizer.Transparency = 0.7
+visualizer.Anchored = true
+visualizer.CanCollide = false
+visualizer.Size = Vector3.new(0.2, 10, 10)
+visualizer.Parent = workspace
+visualizer.Transparency = 1
+
+-- Main Tab
+Tabs.Main:AddParagraph({
+    Title = "Slap Battles Script",
+    Content = "Auto slap and player utilities"
+})
+
+-- Tool Requirement Toggle
+local ToolCheckToggle = Tabs.Main:AddToggle("RequireTool", {
+    Title = "Require Tool Equipped",
+    Description = "Must have a tool equipped to auto-slap",
+    Default = true
+})
+
+-- Auto Slap Toggle
+local AutoSlapToggle = Tabs.Main:AddToggle("AutoSlap", {
+    Title = "Auto Slap",
+    Description = "Automatically slaps nearby players",
+    Default = false
+})
+
+local SlapRangeSlider = Tabs.Main:AddSlider("SlapRange", {
+    Title = "Slap Range",
+    Description = "How far you can slap (Max: 30)",
+    Default = 10,
+    Min = 5,
+    Max = 30,
+    Rounding = 0
+})
+
+local SlapSpeedSlider = Tabs.Main:AddSlider("SlapSpeed", {
+    Title = "Slap Speed",
+    Description = "How fast it detects players (0.1-1 sec)",
+    Default = 0.6,
+    Min = 0.1,
+    Max = 1,
+    Rounding = 1
+})
+
+local MaxPlayersSlider = Tabs.Main:AddSlider("MaxPlayers", {
+    Title = "Max Players to Slap",
+    Description = "Maximum players to detect at once",
+    Default = 5,
+    Min = 1,
+    Max = 20,
+    Rounding = 0
+})
+
+local VisualizerToggle = Tabs.Main:AddToggle("ShowVisualizer", {
+    Title = "Show Range Visualizer",
+    Description = "Displays slap range circle",
+    Default = false
+})
+
+-- Player Tab
+local SpeedSlider = Tabs.Player:AddSlider("WalkSpeed", { -- Changed from toggle to slider
+    Title = "Walk Speed",
+    Default = 16,
+    Min = 16,
+    Max = 100,
+    Rounding = 0
+})
+
+local JumpPowerSlider = Tabs.Player:AddSlider("JumpPower", {
+    Title = "Jump Power",
+    Default = 50,
+    Min = 50,
+    Max = 200,
+    Rounding = 0
+})
+
+local HipHeightSlider = Tabs.Player:AddSlider("HipHeight", {
+    Title = "Hip Height",
+    Default = 0,
+    Min = 0,
+    Max = 50,
+    Rounding = 0
+})
+
+-- Anti Tab (NEW)
+local AntiVoidToggle = Tabs.Anti:AddToggle("AntiVoid", {
+    Title = "Anti Void",
+    Description = "Prevents falling into the void",
+    Default = false
+})
+
+local AntiReverseToggle = Tabs.Anti:AddToggle("AntiReverse", {
+    Title = "Anti Reverse",
+    Description = "Don't slap players with Reverse glove",
+    Default = true
+})
+
+local AntiReverseNotifyToggle = Tabs.Anti:AddToggle("AntiReverseNotify", {
+    Title = "Reverse Notifications",
+    Description = "Show notifications when avoiding Reverse",
+    Default = true
+})
+
+-- Settings Tab
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+InterfaceManager:SetFolder("fluent_slap_battles")
+SaveManager:SetFolder("fluent_slap_battles/"..game.PlaceId)
+
+-- Tool and Slap Logic
+local SlapAuraCharacter = "Head"
+local autoSlapActive = false
+
+local function hasToolEquipped()
+    local character = LocalPlayer.Character
+    return character and character:FindFirstChildOfClass("Tool") ~= nil
+end
+
+local function shouldSlap()
+    return not Options.RequireTool.Value or hasToolEquipped()
+end
+
+local function isReversePlayer(player)
+    if not Options.AntiReverse.Value then return false end
+    local leaderstats = player:FindFirstChild("leaderstats")
+    return leaderstats and leaderstats:FindFirstChild("Glove") and leaderstats.Glove.Value == "Reverse"
+end
+
+local function updateVisualizer()
+    if not visualizer then return end
+    local character = LocalPlayer.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local root = character.HumanoidRootPart
+        visualizer.CFrame = root.CFrame * CFrame.new(0, -2.5, 0) * CFrame.Angles(0, 0, math.rad(90))
+        visualizer.Size = Vector3.new(0.2, Options.SlapRange.Value * 2, Options.SlapRange.Value * 2)
+    end
+end
+
+-- Anti-Void Logic
+local function antiVoidLoop()
+    while Options.AntiVoid.Value and not Fluent.Unloaded do
+         local block = Instance.new("Part")
+    block.Name = "AntiVoid"
+    block.Size = Vector3.new(1000, 1, 1000) 
+    block.Transparency = 0.5 
+    block.CanCollide = true 
+    block.Anchored = true 
+    block.Position = Vector3.new(0, -9, 0)
+    block.Parent = game.Workspace
+	if block then do
+		break
+	end
+end
+
+if Options.AntiVoid.Value == false then do
+		block:Destroy()
+            end
+        end
+        task.wait(0.5)
+    end
+end
+
+local function autoSlapLoop()
+    while autoSlapActive and not Fluent.Unloaded do
+        local waitTime = Options.SlapSpeed.Value
+        local range = Options.SlapRange.Value
+        local maxPlayers = Options.MaxPlayers.Value
+        
+        if shouldSlap() then
+            local targets = {}
+            for _, plr in pairs(Players:GetPlayers()) do
+                if #targets >= maxPlayers then break end
+                
+                if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+                    -- Skip Reverse players if AntiReverse is enabled
+                    if isReversePlayer(plr) then
+                        if Options.AntiReverseNotify.Value then
+                            Fluent:Notify({
+                                Title = "Anti Reverse",
+                                Content = "Avoided slapping "..plr.Name,
+                                Duration = 2
+                            })
+                        end
+                        continue
+                    end
+                    
+                    local targetHead = plr.Character.Head
+                    local myChar = LocalPlayer.Character
+                    
+                    if myChar and myChar:FindFirstChild(SlapAuraCharacter) then
+                        local myAuraPart = myChar[SlapAuraCharacter]
+                        local dist = (myAuraPart.Position - targetHead.Position).Magnitude
+                        
+                        if dist <= range then
+                            table.insert(targets, plr)
+                        end
+                    end
+                end
+            end
+            
+            for _, plr in pairs(targets) do
+                local currentGlove = LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Glove")
+                if currentGlove and gloveHits[currentGlove.Value] then
+                    gloveHits[currentGlove.Value]:FireServer(plr.Character:WaitForChild(SlapAuraCharacter), true)
+                end
+            end
+        end
+        
+        task.wait(waitTime)
+    end
+end
+
+-- Connections
+AutoSlapToggle:OnChanged(function()
+    autoSlapActive = Options.AutoSlap.Value
+    if autoSlapActive then
+        if Options.RequireTool.Value and not hasToolEquipped() then
+            Fluent:Notify({
+                Title = "Auto Slap",
+                Content = "Enable 'Require Tool' or equip a tool",
+                Duration = 3
+            })
+            Options.AutoSlap:SetValue(false)
+            return
+        end
+        Fluent:Notify({
+            Title = "Auto Slap",
+            Content = Options.RequireTool.Value and "Enabled (tool required)" or "Enabled (no tool needed)",
+            Duration = 3
+        })
+        coroutine.wrap(autoSlapLoop)()
+    else
+        Fluent:Notify({
+            Title = "Auto Slap",
+            Content = "Disabled auto slapping",
+            Duration = 3
+        })
+    end
+end)
+
+AntiVoidToggle:OnChanged(function()
+    if Options.AntiVoid.Value then
+        Fluent:Notify({
+            Title = "Anti Void",
+            Content = "Enabled void protection",
+            Duration = 3
+        })
+        coroutine.wrap(antiVoidLoop)()
+    else
+        Fluent:Notify({
+            Title = "Anti Void",
+            Content = "Disabled void protection",
+            Duration = 3
+        })
+    end
+end)
+
+AntiReverseToggle:OnChanged(function()
+    Fluent:Notify({
+        Title = "Anti Reverse",
+        Content = Options.AntiReverse.Value and "Will avoid Reverse gloves" or "Will slap all gloves",
+        Duration = 3
+    })
+end)
+
+ToolCheckToggle:OnChanged(function()
+    Fluent:Notify({
+        Title = "Tool Check",
+        Content = Options.RequireTool.Value and "Now requires tools" or "Tool check disabled",
+        Duration = 2
+    })
+end)
+
+VisualizerToggle:OnChanged(function()
+    visualizer.Transparency = Options.ShowVisualizer.Value and 0.7 or 1
+end)
+
+SlapRangeSlider:OnChanged(function(value)
+    if visualizer then
+        visualizer.Size = Vector3.new(0.2, value * 2, value * 2)
+    end
+end)
+
+SpeedSlider:OnChanged(function(value)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end
+end)
+
+JumpPowerSlider:OnChanged(function(value)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.JumpPower = value
+    end
+end)
+
+HipHeightSlider:OnChanged(function(value)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.HipHeight = value
+    end
+end)
+
+-- Tool monitoring
+local function onToolChange()
+    if autoSlapActive then
+        if Options.RequireTool.Value then
+            if hasToolEquipped() then
+                Fluent:Notify({
+                    Title = "Auto Slap",
+                    Content = "Tool equipped - slapping active",
+                    Duration = 2
+                })
+            else
+                Fluent:Notify({
+                    Title = "Auto Slap",
+                    Content = "No tool equipped - pausing",
+                    Duration = 2
+                })
+            end
+        end
+    end
+end
+
+LocalPlayer.CharacterAdded:Connect(function(character)
+    character.ChildAdded:Connect(function(child)
+        if child:IsA("Tool") then onToolChange() end
+    end)
+    character.ChildRemoved:Connect(function(child)
+        if child:IsA("Tool") then onToolChange() end
+    end)
+end)
+
+-- Visualizer update loop
+RunService.Heartbeat:Connect(function()
+    if Options.ShowVisualizer.Value and visualizer.Transparency ~= 1 and LocalPlayer.Character then
+        updateVisualizer()
+    end
+end)
+
+-- Initialize
+Window:SelectTab(1)
+visualizer.Transparency = Options.ShowVisualizer.Value and 0.7 or 1
+
+-- Set default walk speed
+if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then do
+	 LocalPlayer.Character.Humanoid.WalkSpeed = Options.WalkSpeed.Value
+	end
+end
+
+Fluent:Notify({
+    Title = "Slap Battles Script",
+    Content = "Script loaded successfully!",
+    Duration = 5
+})
+
+SaveManager:LoadAutoloadConfig()
