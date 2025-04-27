@@ -345,6 +345,40 @@ Tabs.Badges:AddButton({
 })
 
 Tabs.Badges:AddButton({
+    Title = "Get Psycho",
+    Description = "Finish the Psycho Obby",
+    Callback = function()
+        Window:Dialog({
+            Title = "Are you sure?",
+            Content = "You'll be teleported to the Psycho Obby.",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                       workspace.RepressedMemoriesMap.Psychokinesis.Triggers.StartPsychoEvent.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            wait(2.5)
+            workspace.RepressedMemoriesMap.Psychokinesis.Triggers.StartPsychoEvent.CFrame = CFrame.new(17879.957, 2977.60913, -242.609451, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            wait(2.5)
+            workspace.RepressedMemoriesMap.Psychokinesis.Triggers.StopPsychoEvent.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            wait(2.5)
+            workspace.RepressedMemoriesMap.Psychokinesis.Triggers.StopPsychoEvent.CFrame = CFrame.new(17347.5801, 2977.60913, 103.471375, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            wait(2.5)
+            fireclickdetector(workspace.RepressedMemoriesMap.Psychokinesis.Triggers.Psycho.ClickDetector)
+
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled the dialog.")
+                    end
+                }
+            }
+        })
+    end
+})
+
+Tabs.Badges:AddButton({
         Title = "Brazil Badge",
         Description = "Get Brazil",
         Callback = function()
