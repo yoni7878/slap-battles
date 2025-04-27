@@ -9,7 +9,7 @@ SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({})
 
 local Window = Fluent:CreateWindow({
-    Title = "Level Hub: Slap Battles" .. Fluent.Version,
+    Title = "Level Hub: Slap Battles " .. Fluent.Version,
     SubTitle = identifyexecutor(),
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
