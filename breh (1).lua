@@ -403,6 +403,31 @@ Tabs.Badges:AddButton({
     end
 })
 
+Tabs.Settings:AddButton({
+    Title = "Reload Script",
+    Description = "Restart, used for updates.",
+    Callback = function()
+        Window:Dialog({
+            Title = "Are you sure?",
+            Content = "You'll lose configurations if not saved.",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+		Fluent:Destroy()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/yoni7878/slap-battles/refs/heads/main/breh%20(1).lua"))						
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled the dialog.")
+                    end
+                }
+            }
+        })
+    end
+})
+
 Tabs.Badges:AddButton({
     Title = "Get Psycho",
     Description = "Finish the Psycho Obby",
