@@ -923,15 +923,20 @@ local farmingSlapples = false
 local farmingPlayers = false
 
 local function getSlapples()
-while Options.FarmSlapples.Value do
-task.wait()
-for i, v in ipairs(workspace.Arena.island5.Slapples:GetDescendants()) do
-	if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Name == "Glove" and v:FindFirstChildWhichIsA("TouchTransmitter") then
-                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
-        		firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
-                end
-			end
+    while Options.FarmSlapples.Value do
+        task.wait()
+        for i, v in ipairs(workspace.Arena.island5.Slapples:GetDescendants()) do
+            if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") 
+            and game.Players.LocalPlayer.Character:FindFirstChild("entered") 
+            and v.Name == "Glove" 
+            and v:FindFirstChildWhichIsA("TouchTransmitter") then
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+            end
+        end
+    end
 end
+
 
 local function farmPlayers()
     if farmingPlayers then return end
