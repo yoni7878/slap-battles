@@ -252,7 +252,7 @@ local FarmPlayersToggle = Tabs.Farm:AddToggle("FarmPlayers", {
 })
 
 local FarmSlapplesToggle = Tabs.Farm:AddToggle("FarmSlapples", {
-    Title = "Auto Farm Slapples",
+    Title = "Auto Farm Slapples (BROKEN RN!?!?!)",
     Description = "Automatically collect slapples in Arena",
     Default = false
 })
