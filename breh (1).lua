@@ -9,7 +9,7 @@ SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({})
 
 local Window = Fluent:CreateWindow({
-    Title = "Slap Battles Script " .. Fluent.Version,
+    Title = "Level Hub: Slap Battles" .. Fluent.Version,
     SubTitle = identifyexecutor(),
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -21,7 +21,7 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "hand" }),
     Player = Window:AddTab({ Title = "Player", Icon = "user" }),
-    Farm = Window:AddTab({ Title = "Farm", Icon = "tractor"}),
+    Farm = Window:AddTab({ Title = "Farm", Icon = "book"}),
     Anti = Window:AddTab({ Title = "Anti", Icon = "shield" }), -- New Anti tab
 	Badges = Window:AddTab({ Title = "Badges", Icon = "check"}),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -669,10 +669,8 @@ local function getSlapples()
     if island then
         for _, slapple in ipairs(slapples) do
     if not Options.FarmSlapples.Value then break end
-    if slapple.Transparency < 1 then  -- Only target visible slapples
         character:PivotTo(slapple.CFrame * CFrame.new(0, 3, 0))
         task.wait(Options.SlapDelay.Value)
-    end
 end
     end
     return slapples
@@ -885,7 +883,7 @@ local AntiReverseNotifyToggle = Tabs.Anti:AddToggle("AntiReverseNotify", {
 -- Settings Tab
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
-InterfaceManager:SetFolder("fluent_slap_battles")
+InterfaceManager:SetFolder("fluent_levelhub")
 SaveManager:SetFolder("fluent_slap_battles/"..game.PlaceId)
 
 -- Tool and Slap Logic
