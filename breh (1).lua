@@ -415,7 +415,8 @@ Tabs.Settings:AddButton({
                     Title = "Confirm",
                     Callback = function()
 		Fluent:Destroy()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/yoni7878/slap-battles/refs/heads/main/breh%20(1).lua"))						
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/yoni7878/slap-battles/refs/heads/main/breh%20(1).lua"))
+							end
                 },
                 {
                     Title = "Cancel",
