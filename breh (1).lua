@@ -923,60 +923,13 @@ local farmingSlapples = false
 local farmingPlayers = false
 
 local function getSlapples()
-    local slapples = {}
-    local island = workspace.Arena:FindFirstChild("island5")
-    if island then
-        for _, slapple in ipairs(slapples) do
-    if not Options.FarmSlapples.Value then break end
-        character:PivotTo(slapple.CFrame * CFrame.new(0, 3, 0))
-        task.wait(Options.SlapDelay.Value)
-end
-    end
-    return slapples
-end
-
-local function farmSlapples()
-    if farmingSlapples then return end
-    farmingSlapples = true
-    
-    local character = LocalPlayer.Character
-    if not character then 
-        farmingSlapples = false
-        return 
-    end
-    
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then 
-        farmingSlapples = false
-        return 
-    end
-    
-    originalPosition = character:GetPivot().Position
-    
-    while Options.FarmSlapples.Value and not Fluent.Unloaded do
-        local slapples = getSlapples()
-        
-        for _, slapple in ipairs(slapples) do
-            if not Options.FarmSlapples.Value then break end
-            
-            if slapples.Transparency == 1 then
-				Options.FarmSlapples.Value = false
+while Options.FarmSlapples.Value then
+for i, v in ipairs(workspace.Arena.island5.Slapples:GetDescendants()) do
+	if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("entered") and v.Name == "Glove" and v:FindFirstChildWhichIsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+        		firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+                end
 			end
-            character:PivotTo(slapple.CFrame * CFrame.new(0, 3, 0))
-            task.wait(Options.SlappleDelay.Value)
-            
-            -- Check if we're still supposed to be farming
-            if not Options.FarmSlapples.Value then break end
-        end
-        
-        -- Return to original position
-        if Options.FarmSlapples.Value then
-            character:PivotTo(CFrame.new(originalPosition))
-            task.wait(1)
-        end
-    end
-    
-    farmingSlapples = false
 end
 
 local function farmPlayers()
