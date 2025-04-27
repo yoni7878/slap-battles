@@ -24,8 +24,9 @@ local Tabs = {
     Farm = Window:AddTab({ Title = "Farm", Icon = "book"}),
     Anti = Window:AddTab({ Title = "Anti", Icon = "shield" }), -- New Anti tab
     Badges = Window:AddTab({ Title = "Badges", Icon = "check"}),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
-    Spam = Window:AddTab({ Title = "Spam", Icon = "zap" })
+	Teleport = Window:AddTab({ Title = "Teleport", Icon = "map" }),
+	Spam = Window:AddTab({ Title = "Spam", Icon = "zap" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 local Options = Fluent.Options
@@ -513,7 +514,6 @@ Tabs.Badges:AddButton({
 })
 
 
-Retro Ability Spam
     Tabs.Spam:AddParagraph({
         Title = "Retro Ability Spam",
         Content = "Spam retro abilities"
@@ -774,8 +774,6 @@ Retro Ability Spam
             end
         end
     })
-end
-
 
 
 
@@ -1148,6 +1146,182 @@ local AntiReverseNotifyToggle = Tabs.Anti:AddToggle("AntiReverseNotify", {
     Description = "Show notifications when avoiding Reverse",
     Default = true
 })
+
+Tabs.Teleport:AddDropdown("TeleportLocations", {
+        Title = "Teleport Locations",
+        Values = {
+            "SafePort", 
+            "Slapples Island", 
+            "Moai Island", 
+            "Plate", 
+            "Default Arena", 
+            "Normal Arena", 
+            "Spawn",
+            "Cannon Island", 
+            "Bounty Hunter Room"
+        },
+        Default = "Spawn",
+        Callback = function(selected)
+            local character = game.Players.LocalPlayer.Character
+            if not character or not character:FindFirstChild("HumanoidRootPart") then 
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "Character not found!",
+                    Duration = 3
+                })
+                return 
+            end
+            
+            local hrp = character.HumanoidRootPart
+            local success, err = pcall(function()
+                -- Define all teleport locations with safe checks
+                if selected == "SafePort" then
+                    hrp.CFrame = CFrame.new(2461.50464, 243.291565, -4546.78467)
+                
+                elseif selected == "Slapples Island" then
+                    if workspace.Arena:FindFirstChild("island5") and workspace.Arena.island5:FindFirstChild("Union") then
+                        hrp.CFrame = workspace.Arena.island5.Union.CFrame
+                    else
+                        error("Slapples Island not found in workspace!")
+                    end
+                
+                elseif selected == "Moai Island" then
+                    if workspace.Arena:FindFirstChild("island4") and workspace.Arena.island4:FindFirstChild("Big Tree") then
+                        hrp.CFrame = workspace.Arena.island4["Big Tree"].Bark.CFrame * CFrame.new(3, -4, 0)
+                    else
+                        error("Moai Island not found in workspace!")
+                    end
+                
+                elseif selected == "Plate" then
+                    if workspace.Arena:FindFirstChild("Plate") then
+                        hrp.CFrame = workspace.Arena.Plate.CFrame
+                    else
+                        error("Plate not found in workspace!")
+                    end
+                
+                -- Removed Battle Arena since it's not a valid member
+                
+                elseif selected == "Cannon Island" then
+                    hrp.CFrame = CFrame.new(257.620972, 35.9974861, 198.8535)
+                
+                elseif selected == "Bounty Hunter Room" then
+                    hrp.CFrame = CFrame.new(17894.6855, -130.158478, -3539.8374)
+                
+                elseif selected == "Default Arena" then
+                    hrp.CFrame = CFrame.new(120, 364, -3)
+                
+                elseif selected == "Normal Arena" then
+                    hrp.CFrame = CFrame.new(-15.3642788, -3.69053721, -7.41954088)
+                
+                elseif selected == "Spawn" then
+                    hrp.CFrame = CFrame.new(-798.47345, 329.357147, 0.84058404)
+                end
+            end)
+            
+            if not success then
+                Fluent:Notify({
+                    Title = "Teleport Failed",
+                    Content = err,
+                    Duration = 5
+                })
+            else
+                Fluent:Notify({
+                    Title = "Teleported",
+                    Content = "Successfully teleported to: "..selected,
+                    Duration = 3
+                })
+            end
+        end
+    })
+
+    -- Player teleport section (same as before)
+    Tabs.Teleport:AddParagraph({
+        Title = "Player Teleport",
+        Content = "Teleport to other players"
+    })
+
+    local playerList = {}
+    local playerDropdown = Tabs.Teleport:AddDropdown("TeleportPlayer", {
+        Title = "Select Player",
+        Values = playerList,
+        Default = nil,
+        AllowNull = true
+    })
+
+    local function updatePlayerList()
+        table.clear(playerList)
+        for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                table.insert(playerList, player.Name)
+            end
+        end
+        playerDropdown:SetValues(playerList)
+    end
+
+    updatePlayerList()
+    game:GetService("Players").PlayerAdded:Connect(updatePlayerList)
+    game:GetService("Players").PlayerRemoving:Connect(updatePlayerList)
+
+    Tabs.Teleport:AddButton({
+        Title = "Teleport to Player",
+        Callback = function()
+            local targetName = Options.TeleportPlayer.Value
+            if not targetName then return end
+            
+            local target = game:GetService("Players"):FindFirstChild(targetName)
+            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = 
+                    target.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+                Fluent:Notify({
+                    Title = "Success",
+                    Content = "Teleported to "..targetName,
+                    Duration = 3
+                })
+            else
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "Target player not found!",
+                    Duration = 3
+                })
+            end
+        end
+    })
+
+    -- Position saving (same as before)
+    local savedPosition = nil
+    Tabs.Teleport:AddButton({
+        Title = "Save Current Position",
+        Callback = function()
+            if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                savedPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                Fluent:Notify({
+                    Title = "Position Saved",
+                    Content = "You can now teleport back here",
+                    Duration = 3
+                })
+            end
+        end
+    })
+
+    Tabs.Teleport:AddButton({
+        Title = "Return to Saved Position",
+        Callback = function()
+            if savedPosition then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = savedPosition
+                Fluent:Notify({
+                    Title = "Teleported",
+                    Content = "Returned to saved position",
+                    Duration = 3
+                })
+            else
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "No position saved yet!",
+                    Duration = 3
+                })
+            end
+        end
+    })
 
 -- Settings Tab
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
