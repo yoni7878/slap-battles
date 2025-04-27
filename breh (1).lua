@@ -253,6 +253,65 @@ local FarmPlayersToggle = Tabs.Farm:AddToggle("FarmPlayers", {
     Default = false
 })
 
+-- Add this to your Anti tab (or wherever you want it)
+Tabs.Anti:AddToggle("AntiRagdoll", {
+    Title = "Anti Ragdoll",
+    Description = "Prevents ragdoll effects on your character",
+    Default = false,
+    Callback = function(state)
+        getgenv().antiRagdoll = state
+        
+        if state then
+            -- Initialize when enabled
+            local function setupAntiRagdoll(character)
+                if not character then return end
+                
+                local humanoid = character:WaitForChild("Humanoid")
+                local ragdollValue = character:WaitForChild("Ragdolled")
+                local torso = character:WaitForChild("Torso") or character:WaitForChild("UpperTorso")
+                
+                ragdollValue:GetPropertyChangedSignal("Value"):Connect(function()
+                    if ragdollValue.Value and getgenv().antiRagdoll then
+                        -- When ragdolled
+                        if torso then
+                            torso.Anchored = true
+                        end
+                        
+                        -- Wait until no longer ragdolled
+                        repeat task.wait() until not ragdollValue.Value or not getgenv().antiRagdoll
+                        
+                        if torso then
+                            torso.Anchored = false
+                        end
+                    end
+                end)
+            end
+            
+            -- Setup for current character
+            if game.Players.LocalPlayer.Character then
+                setupAntiRagdoll(game.Players.LocalPlayer.Character)
+            end
+            
+            -- Setup for future characters
+            game.Players.LocalPlayer.CharacterAdded:Connect(setupAntiRagdoll)
+            
+            -- Notify user
+            Fluent:Notify({
+                Title = "Anti Ragdoll",
+                Content = "Enabled ragdoll protection",
+                Duration = 3
+            })
+        else
+            -- Notify user when disabled
+            Fluent:Notify({
+                Title = "Anti Ragdoll",
+                Content = "Disabled ragdoll protection",
+                Duration = 3
+            })
+        end
+    end
+})
+
 local FarmSlapplesToggle = Tabs.Farm:AddToggle("FarmSlapples", {
     Title = "Auto Farm Slapples (BROKEN RN!?!?!)",
     Description = "Automatically collect slapples in Arena",
