@@ -1141,9 +1141,9 @@ local AntiReverseToggle = Tabs.Anti:AddToggle("AntiReverse", {
     Default = true
 })
 
-local AntiReverseNotifyToggle = Tabs.Anti:AddToggle("AntiReverseNotify", {
-    Title = "Reverse Notifications",
-    Description = "Show notifications when avoiding Reverse",
+local AntiSpectator = Tabs.Anti:AddToggle("AntiSpectator", {
+    Title = "Anti Spectator",
+    Description = "Don't slap players with Spectator glove",
     Default = true
 })
 
@@ -1349,6 +1349,12 @@ local function isReversePlayer(player)
     return leaderstats and leaderstats:FindFirstChild("Glove") and leaderstats.Glove.Value == "Reverse"
 end
 
+local function isSpectatorPlayer(player)
+    if not Options.AntiSpectator.Value then return false end
+    local leaderstats = player:FindFirstChild("leaderstats")
+    return leaderstats and leaderstats:FindFirstChild("Glove") and leaderstats.Glove.Value == "Spectator"
+end
+
 local function checkForMegarocks()
     for _, player in ipairs(Players:GetPlayers()) do
         if player.Character then
@@ -1419,6 +1425,17 @@ local function autoSlapLoop()
                         if Options.AntiReverseNotify.Value then
                             Fluent:Notify({
                                 Title = "Anti Reverse",
+                                Content = "Avoided slapping "..plr.Name,
+                                Duration = 2
+                            })
+                        end
+                        continue
+                    end
+
+		if isSpectatorPlayer(plr) then
+                        if Options.AntiReverseNotify.Value then
+                            Fluent:Notify({
+                                Title = "Anti Spectator",
                                 Content = "Avoided slapping "..plr.Name,
                                 Duration = 2
                             })
