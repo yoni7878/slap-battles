@@ -23,8 +23,9 @@ local Tabs = {
     Player = Window:AddTab({ Title = "Player", Icon = "user" }),
     Farm = Window:AddTab({ Title = "Farm", Icon = "book"}),
     Anti = Window:AddTab({ Title = "Anti", Icon = "shield" }), -- New Anti tab
-	Badges = Window:AddTab({ Title = "Badges", Icon = "check"}),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    Badges = Window:AddTab({ Title = "Badges", Icon = "check"}),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
+    Spam = Window:AddTab({ Title = "Spam", Icon = "zap" })
 }
 
 local Options = Fluent.Options
@@ -510,6 +511,274 @@ Tabs.Badges:AddButton({
         })
     end
 })
+
+
+Retro Ability Spam
+    Tabs.Spam:AddParagraph({
+        Title = "Retro Ability Spam",
+        Content = "Spam retro abilities"
+    })
+    
+    local retroDropdown = Tabs.Spam:AddDropdown("RetroAbility", {
+        Title = "Choose Ability",
+        Values = {"Ban Hammer", "Bomb", "Rocket Launcher"},
+        Default = "Ban Hammer"
+    })
+    
+    Tabs.Spam:AddToggle("SpamRetroToggle", {
+        Title = "Enable Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().spamRetro = state
+            local selectedAbility = Options.RetroAbility.Value
+            
+            while getgenv().spamRetro and task.wait(0.2) do
+                local args = {[1] = selectedAbility}
+                game:GetService("ReplicatedStorage"):WaitForChild("RetroAbility"):FireServer(unpack(args))
+            end
+        end
+    })
+
+    -- Admin Ability Spam
+    Tabs.Spam:AddParagraph({
+        Title = "Admin Ability Spam",
+        Content = "Spam admin abilities"
+    })
+    
+    local adminDropdown = Tabs.Spam:AddDropdown("AdminAbility", {
+        Title = "Choose Ability",
+        Values = {"Anvil", "Fling", "Invisibility"},
+        Default = "Anvil"
+    })
+    
+    Tabs.Spam:AddToggle("SpamAdminToggle", {
+        Title = "Enable Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().spamAdmin = state
+            local selectedAbility = Options.AdminAbility.Value
+            
+            while getgenv().spamAdmin and task.wait(0.2) do
+                local abilityName = selectedAbility == "Invisibility" and "Invisibility" or selectedAbility
+                local args = {[1] = abilityName}
+                game:GetService("ReplicatedStorage"):WaitForChild("AdminAbility"):FireServer(unpack(args))
+            end
+        end
+    })
+
+    -- Null Spam
+    Tabs.Spam:AddParagraph({
+        Title = "Null Spam",
+        Content = "Spam Null ability"
+    })
+    
+    Tabs.Spam:AddToggle("SpamNullToggle", {
+        Title = "Enable Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().nullSpam = state
+            
+            while getgenv().nullSpam and task.wait(0.5) do
+                game:GetService("ReplicatedStorage"):WaitForChild("NullAbility"):FireServer()
+            end
+        end
+    })
+
+    -- Rhythm Spam
+    Tabs.Spam:AddParagraph({
+        Title = "Rhythm Spam",
+        Content = "Spam Rhythm explosions"
+    })
+    
+    Tabs.Spam:AddToggle("SpamRhythmToggle", {
+        Title = "Enable Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().spamRhythm = state
+            
+            while getgenv().spamRhythm and task.wait(0.1) do
+                local args = {
+                    [1] = "AoeExplosion",
+                    [2] = 42
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("rhythmevent"):FireServer(unpack(args))
+            end
+        end
+    })
+
+    -- Rojo Spam
+    Tabs.Spam:AddParagraph({
+        Title = "Rojo Spam",
+        Content = "Spam Rojo ability"
+    })
+    
+    local rojoTarget = game.Players.LocalPlayer.Name
+    
+    Tabs.Spam:AddInput("RojoTargetInput", {
+        Title = "Target Player",
+        Default = "me",
+        Placeholder = "Username or 'me'",
+        Callback = function(text)
+            if text:lower() == "me" or text:lower() == "username" or text == "" then
+                rojoTarget = game.Players.LocalPlayer.Name
+            else
+                rojoTarget = text
+            end
+        end
+    })
+    
+    Tabs.Spam:AddToggle("SpamRojoToggle", {
+        Title = "Enable Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().spamRojo = state
+            
+            while getgenv().spamRojo and task.wait() do
+                local targetPlayer = game.Players:FindFirstChild(rojoTarget)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    game:GetService("ReplicatedStorage"):WaitForChild("RojoAbility"):FireServer("Release", {
+                        targetPlayer.Character.HumanoidRootPart.CFrame
+                    })
+                end
+            end
+        end
+    })
+
+    -- Glove-Specific Spams
+    Tabs.Spam:AddParagraph({
+        Title = "Glove-Specific Spams",
+        Content = "Requires specific gloves to be equipped"
+    })
+
+    -- Ping Pong Spam
+    Tabs.Spam:AddToggle("SpamPingPongToggle", {
+        Title = "Ping Pong Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().spamPingPong = state
+            
+            if game.Players.LocalPlayer.leaderstats.Glove.Value ~= "Ping Pong" then
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "You need Ping Pong Glove",
+                    Duration = 5
+                })
+                Options.SpamPingPongToggle:SetValue(false)
+                return
+            end
+            
+            while getgenv().spamPingPong and task.wait(0.01) do
+                game:GetService("ReplicatedStorage").GeneralAbility:FireServer()
+                
+                local players = game.Players:GetPlayers()
+                local validPlayers = {}
+                
+                for _, player in ipairs(players) do
+                    if player ~= game.Players.LocalPlayer and player.Character then
+                        local char = player.Character
+                        if char:FindFirstChild("rock") == nil 
+                           and char.Head:FindFirstChild("UnoReverseCard") == nil 
+                           and char:FindFirstChild("entered") then
+                            table.insert(validPlayers, player)
+                        end
+                    end
+                end
+                
+                if #validPlayers > 0 then
+                    local randomPlayer = validPlayers[math.random(1, #validPlayers)]
+                    for _, ball in ipairs(workspace:GetChildren()) do
+                        if ball:IsA("Part") and ball.Name == game.Players.LocalPlayer.Name.."_PingPongBall" then
+                            ball.CFrame = randomPlayer.Character.HumanoidRootPart.CFrame
+                        end
+                    end
+                end
+            end
+        end
+    })
+
+    -- Shukuchi Spam
+    Tabs.Spam:AddToggle("SpamShukuchiToggle", {
+        Title = "Shukuchi Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().spamShukuchi = state
+            
+            if game.Players.LocalPlayer.leaderstats.Glove.Value ~= "Shukuchi" then
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "You need Shukuchi Glove",
+                    Duration = 5
+                })
+                Options.SpamShukuchiToggle:SetValue(false)
+                return
+            end
+            
+            while getgenv().spamShukuchi and task.wait() do
+                for _, player in ipairs(game.Players:GetPlayers()) do
+                    if player ~= game.Players.LocalPlayer and player.Character then
+                        local char = player.Character
+                        if char:FindFirstChild("HumanoidRootPart") 
+                           and char:FindFirstChild("rock") == nil 
+                           and char.HumanoidRootPart.BrickColor ~= BrickColor.new("New Yeller") 
+                           and char.Ragdolled.Value == false 
+                           and char.Head:FindFirstChild("RedEye") == nil 
+                           and char.Head:FindFirstChild("UnoReverseCard") == nil then
+                            game:GetService("ReplicatedStorage"):WaitForChild("SM"):FireServer(player)
+                        end
+                    end
+                end
+            end
+        end
+    })
+
+    -- Jester Spam
+    Tabs.Spam:AddToggle("SpamJesterToggle", {
+        Title = "Jester Cards Spam",
+        Default = false,
+        Callback = function(state)
+            getgenv().jesterCardSpam = state
+            
+            if game.Players.LocalPlayer.leaderstats.Glove.Value ~= "Jester" then
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "You need Jester Glove",
+                    Duration = 10
+                })
+                Options.SpamJesterToggle:SetValue(false)
+                return
+            end
+            
+            while getgenv().jesterCardSpam and task.wait() do
+                local players = game:GetService("Players"):GetPlayers()
+                local localPlayer = game.Players.LocalPlayer
+                local closestPlayer = nil
+                local closestDistance = math.huge
+                
+                for _, player in ipairs(players) do
+                    if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
+                        if distance < closestDistance then
+                            closestPlayer = player
+                            closestDistance = distance
+                        end
+                    end
+                end
+                
+                if closestPlayer then
+                    local args = {
+                        [1] = "Ability3",
+                        [2] = closestPlayer
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("GeneralAbility"):FireServer(unpack(args))
+                end
+            end
+        end
+    })
+end
+
+
+
+
 
 Tabs.Badges:AddButton({
     Title = "Frostbite Glove",
