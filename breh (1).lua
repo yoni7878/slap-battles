@@ -991,7 +991,7 @@ end)
 
 FarmSlapplesToggle:OnChanged(function()
     if Options.FarmSlapples.Value then
-        coroutine.wrap(farmSlapples)()
+        coroutine.wrap(getSlapples)()
     end
 end)
 
