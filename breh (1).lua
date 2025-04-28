@@ -1373,24 +1373,10 @@ local function autoSlapLoop()
                 if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
                     -- Skip Reverse players if AntiReverse is enabled
                     if isReversePlayer(plr) then
-                        if Options.AntiReverseNotify.Value then
-                            Fluent:Notify({
-                                Title = "Anti Reverse",
-                                Content = "Avoided slapping "..plr.Name,
-                                Duration = 2
-                            })
-                        end
                         continue
                     end
 
 		if isSpectatorPlayer(plr) then
-                        if Options.AntiReverseNotify.Value then
-                            Fluent:Notify({
-                                Title = "Anti Spectator",
-                                Content = "Avoided slapping "..plr.Name,
-                                Duration = 2
-                            })
-                        end
                         continue
                     end
                     
