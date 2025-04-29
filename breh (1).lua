@@ -234,6 +234,38 @@ gloveHits = {
     ["Error"] = game.ReplicatedStorage.Errorhit
 }
 
+Fluent:Notify({
+    Title = "Welcome to Level Hub!",
+    Content = "key dont save and dont run twice ",
+    Duration = 3
+})
+
+Tabs.Main:AddSection("God Mode")
+
+Tabs.Main:AddButton({
+    Title = "God Mode",
+    Description = "Teleport to default arena.",
+    Callback = function()
+        Window:Dialog({
+            Title = "Are you sure?",
+            Content = "You'll be teleported.",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-15.3642788, -3.69053721, -7.41954088)
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled the dialog.")
+                    end
+                }
+            }
+        })
+    end
+})
 -- Visualizer part
 local visualizer = Instance.new("Part")
 visualizer.Shape = Enum.PartType.Cylinder
@@ -403,28 +435,7 @@ Tabs.Badges:AddButton({
     end
 })
 
-Tabs.Settings:AddButton({
-    Title = "Reload Script",
-    Description = "Restart, used for updates.",
-    Callback = function()
-        Window:Dialog({
-            Title = "Are you sure?",
-            Content = "You'll lose configurations if not saved.",
-            Buttons = {
-                {
-                    Title = "Confirm",
-                    Callback = function()
-		Fluent:Destroy()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/yoni7878/slap-battles/refs/heads/main/breh%20(1).lua"))
-							end
-                },
-                {
-                    Title = "Cancel",
-                    Callback = function()
-                        print("Cancelled the dialog.")
-                    end
-                }
-            }
+Tabs.Setting
         })
     end
 })
@@ -995,11 +1006,7 @@ FarmSlapplesToggle:OnChanged(function()
     end
 end)
 
--- Main Tab
-Tabs.Main:AddParagraph({
-    Title = "Slap Battles Script",
-    Content = "Auto slap and player utilities"
-})
+Tabs.Main:AddSection("Slap Aura")
 
 -- Tool Requirement Toggle
 local ToolCheckToggle = Tabs.Main:AddToggle("RequireTool", {
@@ -1274,6 +1281,69 @@ Tabs.Teleport:AddDropdown("TeleportLocations", {
         end
     })
 
+Tabs.Settings:AddSection("Reload") -- Optional: Adds a section header
+
+Tabs.Settings:AddButton({
+    Title = "Reload Script",
+    Description = "Restart the script (resets all changes)",
+    Callback = function()
+        Window:Dialog({
+            Title = "Are you sure?",
+            Content = "This will reset EVERYTHING and reload the script.",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        -- Disable all active features first
+                        if autoSlapActive then
+                            autoSlapActive = false
+                        end
+                        
+                        if farmingPlayers then
+                            farmingPlayers = false
+                        end
+                        
+                        if farmingSlapples then
+                            farmingSlapples = false
+                        end
+                        
+                        -- Remove visualizer
+                        if visualizer and visualizer.Parent then
+                            visualizer:Destroy()
+                        end
+                        
+                        -- Remove anti-void block
+                        if antiVoidBlock and antiVoidBlock.Parent then
+                            antiVoidBlock:Destroy()
+                        end
+                        
+                        -- Reset player properties
+                        local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                        if humanoid then
+                            humanoid.WalkSpeed = 16
+                            humanoid.JumpPower = 50
+                            humanoid.HipHeight = 0
+                        end
+                        
+                        -- Clear Fluent UI
+                        Fluent:Destroy()
+                        
+                        -- Full script reload
+                        loadstring(game:HttpGet("https://raw.githubusercontent.com/yoni7878/slap-battles/refs/heads/main/breh%20(1).lua"))()
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled the reload.")
+                    end
+                }
+            }
+        })
+    end
+})
+
+
 -- Settings Tab
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
@@ -1535,6 +1605,7 @@ RunService.Heartbeat:Connect(function()
         updateVisualizer()
     end
 end)
+
 
 -- Initialize
 Window:SelectTab(1)
