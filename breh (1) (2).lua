@@ -14,7 +14,7 @@ local Window = Fluent:CreateWindow({
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
-    Theme = "Dark",
+    Theme = "Darker",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
@@ -25,7 +25,7 @@ local Tabs = {
     Anti = Window:AddTab({ Title = "Anti", Icon = "shield" }), -- New Anti tab
     Badges = Window:AddTab({ Title = "Badges", Icon = "check"}),
 	Teleport = Window:AddTab({ Title = "Teleport", Icon = "map" }),
-	Spam = Window:AddTab({ Title = "Spam", Icon = "zap" }),
+	Spam = Window:AddTab({ Title = "Spam", Icon = "sword" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
@@ -435,11 +435,6 @@ Tabs.Badges:AddButton({
     end
 })
 
-Tabs.Setting
-        })
-    end
-})
-
 Tabs.Badges:AddButton({
     Title = "Get Psycho",
     Description = "Finish the Psycho Obby",
@@ -448,7 +443,7 @@ Tabs.Badges:AddButton({
             Title = "Are you sure?",
             Content = "You'll be teleported to the Psycho Obby.",
             Buttons = {
-                {
+                {	
                     Title = "Confirm",
                     Callback = function()
                        workspace.RepressedMemoriesMap.Psychokinesis.Triggers.StartPsychoEvent.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
@@ -965,27 +960,41 @@ local function farmPlayers()
         return 
     end
     
+    -- Get the anti-void block's Y position (default is -9)
+    local voidYLevel = -9
+    if antiVoidBlock and antiVoidBlock.Parent then
+        voidYLevel = antiVoidBlock.Position.Y
+    end
+    
     originalPosition = character:GetPivot().Position
     
     while Options.FarmPlayers.Value and not Fluent.Unloaded do
+        local targetsFound = false
+        
         for _, player in ipairs(Players:GetPlayers()) do
             if not Options.FarmPlayers.Value then break end
             if player == LocalPlayer then continue end
             
             local targetChar = player.Character
-            if targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+            if targetChar and targetChar:FindFirstChild("HumanoidRootPart") and targetChar:FindFirstChild("entered") then
+                -- Skip if player is under the anti-void block
+                if targetChar.HumanoidRootPart.Position.Y < voidYLevel then
+                    continue
+                end
+                
+                targetsFound = true
                 -- Teleport to player
                 character:PivotTo(targetChar.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3))
                 task.wait(0.5)
                 
-                -- Check if we're still supposed to be farming
                 if not Options.FarmPlayers.Value then break end
             end
         end
         
-        -- Return to original position
-        if Options.FarmPlayers.Value then
+        if not targetsFound and Options.FarmPlayers.Value then
             character:PivotTo(CFrame.new(originalPosition))
+            task.wait(1)
+        else
             task.wait(1)
         end
     end
