@@ -1797,7 +1797,8 @@ Tabs.World:AddButton("ghostinvis", {
                         Callback = function()
                             print("Cancelled the dialog.")
                         end
-                    }
+                    	}
+	            }
                 }
             })
 		})
