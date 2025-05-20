@@ -1,5 +1,5 @@
 if Fluent then
-    -- Fake loading print
+    -- cool print
     for i = 1, 1 do
         warn("loading" .. string.rep(".", i))
         wait(0.5)
