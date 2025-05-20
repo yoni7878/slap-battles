@@ -1759,7 +1759,7 @@ Tabs.Settings:AddButton({
 
 Tabs.World:AddSection("Ghost")
 
-Tabs.World:AddButton("ghostinvis", {
+Tabs.World:AddButton({
     Title = "Invisibility (Ghost Glove)",
     Description = "You need Ghost Glove or 666+ slaps to work.",
     Callback = function()
